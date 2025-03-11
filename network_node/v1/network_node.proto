@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package example.v1;
+package network_node.v1;
 
 option go_package = "github.com/productscience/chain-protos/network_node/v1";
 
