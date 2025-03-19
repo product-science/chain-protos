@@ -1,159 +1,166 @@
-# gRPC Record Service
+# Chain Protos
 
-A simple gRPC-based record service that allows setting and retrieving key-value pairs.
+This repository contains Protocol Buffer (proto) definitions for various services and APIs. It serves as a centralized place for sharing these definitions across multiple projects.
 
-## Project Structure
+## Repository Structure
 
 ```
-.
-├── Makefile                          # Makefile for common tasks
-├── network_node/v1/                  # Proto definition
-│   └── network_node.proto            # Protocol buffer definition
-├── github.com/productscience/chain-protos/  # Generated Go code
-│   └── network_node/v1/
-│       ├── network_node.pb.go        # Generated Go messages
-│       └── network_node_grpc.pb.go   # Generated Go service
-├── network_node_direct/v1/           # Copy of generated Go code for direct import
-│   ├── network_node.pb.go
-│   └── network_node_grpc.pb.go
-├── python/                           # Python client
-│   ├── network_node/v1/
-│   │   ├── __init__.py
-│   │   ├── network_node_pb2.py       # Generated Python messages
-│   │   └── network_node_pb2_grpc.py  # Generated Python service
-│   ├── network_node/__init__.py
-│   └── client.py                     # Python client implementation
-└── server/                           # Go server
-    ├── go.mod                        # Go module file for the server
-    └── main.go                       # Go server implementation
+chain-protos/
+├── network_node/            # Service definitions for network node
+│   └── v1/                  # Version 1 of network node API
+│       └── network_node.proto
+├── gen/                     # Directory for generated code (included in the repo)
+└── python/                  # Python-specific generated code
 ```
 
-## Prerequisites
+## Usage
 
-### Go Server
+There are two main approaches to using this repository in your projects:
 
-- Go 1.13+
-- Protobuf compiler (`protoc`)
-- Go plugins for the protocol compiler
+### Option 1: As a Proto-only Dependency
 
-### Python Client
+With this approach, you:
+1. Import this repository as a dependency
+2. Generate the code in your own project
 
-- Python 3.6+
-- gRPC Python packages
+This gives you more control over code generation parameters and avoids version mismatches.
 
-## Using the Makefile
+#### Go Projects
 
-The project includes a Makefile that simplifies common tasks:
-
-### Setup
-
-Set up everything including directories, Go environment, Python environment, and generate code:
+Add this repo as a dependency:
 
 ```bash
-make setup
+# In your Go project
+go get github.com/productscience/chain-protos
 ```
 
-### Generate Code
-
-Generate Go code from proto files:
+Generate code in your project:
 
 ```bash
-make gen-go
+# In your Go project
+protoc --go_out=. --go_opt=paths=source_relative \
+  --go-grpc_out=. --go-grpc_opt=paths=source_relative \
+  $(go list -f '{{ .Dir }}' -m github.com/productscience/chain-protos)/network_node/v1/network_node.proto
 ```
 
-Generate Python code from proto files:
+You can also add this to your Makefile:
+
+```makefile
+CHAIN_PROTOS_DIR=$(shell go list -f '{{ .Dir }}' -m github.com/productscience/chain-protos)
+
+gen-protos:
+	protoc --go_out=. --go_opt=paths=source_relative \
+		--go-grpc_out=. --go-grpc_opt=paths=source_relative \
+		$(CHAIN_PROTOS_DIR)/network_node/v1/network_node.proto
+```
+
+#### Non-Go Projects
+
+Clone this repository and reference the proto files:
 
 ```bash
-make gen-python
+# Clone the repository
+git clone https://github.com/productscience/chain-protos.git
+
+# Generate code for your language
+protoc --proto_path=chain-protos \
+  --python_out=. --grpc_python_out=. \
+  chain-protos/network_node/v1/network_node.proto
 ```
 
-### Run Server and Client
+### Option 2: Using Pre-generated Code (Recommended for Go)
 
-Run the Go server:
+This repository includes pre-generated Go code checked into version control, making it easy to use as a direct dependency:
 
 ```bash
-make run-server
+# In your Go project
+go get github.com/productscience/chain-protos
 ```
 
-Run the Python client to set a record (in a separate terminal):
+Then import the generated code directly:
 
-```bash
-make run-set
+```go
+import networknodev1 "github.com/productscience/chain-protos/gen/network_node/v1"
 ```
 
-Run the Python client to get a record:
+This approach is simpler and ensures all consumers use the exact same generated code, preventing subtle incompatibilities between different versions of the code generator.
 
-```bash
-make run-get
+## Developing Proto Files
+
+When adding or modifying proto files:
+
+1. Place new proto files in a directory structure that reflects their package:
+   ```
+   <service-name>/<version>/<service-name>.proto
+   ```
+
+2. For Go, use the following format for the `go_package` option:
+   ```protobuf
+   option go_package = "github.com/productscience/chain-protos/<service-name>/<version>;<packagename>";
+   ```
+   Where `<packagename>` is a shortened version of the package path.
+
+3. Run code generation:
+   ```bash
+   make gen-go
+   ```
+
+## Understanding the go_package Option
+
+The `go_package` option has two parts separated by a semicolon:
+- The import path: `github.com/productscience/chain-protos/network_node/v1`
+- The package name: `networknodev1`
+
+Example:
+```protobuf
+option go_package = "github.com/productscience/chain-protos/network_node/v1;networknodev1";
 ```
 
-Run Python client with custom arguments:
+The import path tells Go where to find the package, while the package name is used in the generated code.
 
-```bash
-# For set action
-make run-client ACTION=set KEY=customkey VALUE=customvalue
+## Versioning
 
-# For get action
-make run-client ACTION=get KEY=customkey
-```
+This repository follows semantic versioning. When making changes:
 
-### Clean Up
+- For backward-compatible additions, increment the minor version
+- For backward-incompatible changes, increment the major version
+- Create new proto files in new version directories for major changes
 
-Clean generated files:
+## For Cosmos SDK Projects
 
-```bash
-make clean
-```
+For detailed instructions on how to use these protos in Cosmos SDK projects, see [COSMOS_USAGE.md](COSMOS_USAGE.md).
 
-View all available commands:
+## Examples
 
-```bash
-make help
-```
+### Go gRPC Server and Client
 
-## Manual Setup and Running
+A complete example showing how to use this repository in a Go project can be found in the [examples/go-usage](examples/go-usage) directory. It demonstrates:
 
-If you prefer not to use the Makefile, you can follow these manual steps:
+- Setting up a Go project that depends on chain-protos
+- Implementing a gRPC server using the generated code
+- Creating a gRPC client that communicates with the server
 
-### Generate Code
+To run the example:
 
-```bash
-# Generate Go code
-protoc --go_out=. --go-grpc_out=. network_node/v1/network_node.proto
+1. Generate the Go code:
+   ```bash
+   make gen-go
+   ```
 
-# Generate Python code
-python -m grpc_tools.protoc -I. --python_out=python --grpc_python_out=python network_node/v1/network_node.proto
-```
+2. Run the server:
+   ```bash
+   cd examples/go-usage
+   go run main.go
+   ```
 
-### Run the Go Server
+3. In another terminal, run the client:
+   ```bash
+   cd examples/go-usage/client
+   go run main.go
+   ```
 
-```bash
-cd server
-go run main.go
-```
+This example provides a practical demonstration of how to use the proto definitions in a real project.
 
-The server will listen on port 50051.
+## Contributing
 
-### Run the Python Client
-
-First, make sure you have activated the Python virtual environment:
-
-```bash
-source venv/bin/activate
-```
-
-Then navigate to the python directory and run the client:
-
-```bash
-cd python
-
-# Set a record
-python client.py --action set --key mykey --value myvalue
-
-# Get a record
-python client.py --action get --key mykey
-```
-
-## Go Package Directive
-
-The `go_package` directive in the proto file (`option go_package = "github.com/productscience/chain-protos/network_node/v1";`) tells the protobuf compiler where to place the generated Go code in the Go module hierarchy. It sets the import path for the generated package. 
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details on how to submit changes and the process for reviewing them. 

@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package network_node.v1;
 
-option go_package = "github.com/productscience/chain-protos/network_node/v1";
+option go_package = "github.com/productscience/chain-protos/network_node/v1;networknodev1";
 
 service RecordService {
   rpc SetRecord(SetRecordRequest) returns (SetRecordResponse);

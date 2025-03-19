@@ -1,0 +1,18 @@
+version: v1
+name: buf.build/productscience/chain-protos
+lint:
+  use:
+    - DEFAULT
+  except:
+    - PACKAGE_VERSION_SUFFIX
+    - SERVICE_SUFFIX
+  ignore_only:
+    ENUM_ZERO_VALUE_SUFFIX:
+      - network_node/v1/network_node.proto
+breaking:
+  use:
+    - FILE
+build:
+  excludes: []
+deps:
+  - buf.build/googleapis/googleapis 
