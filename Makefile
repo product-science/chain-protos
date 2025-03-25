@@ -17,7 +17,7 @@ PROTOC_GEN_GRPC_GATEWAY = \
   --grpc-gateway_out=$(GO_OUT_DIR) \
   --grpc-gateway_opt=module=github.com/product-science/chain-protos/go
 
-proto-gen:
+proto-gen-go:
 	protoc $(PROTO_INCLUDE) \
 	  $(PROTOC_GEN_GO) \
 	  $(PROTOC_GEN_GRPC_GATEWAY) \
