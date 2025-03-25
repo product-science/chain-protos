@@ -31,11 +31,18 @@ message JoinTrainingRequest {
 }
 
 message MLNodeTrainStatus {
-  string status = 1;             // e.g. "ok", "error", "joined", "not_joined"
+  MLNodeTrainStatusEnum status = 1;
   string node_id = 2;
   int32 epoch = 3;
   repeated string active_nodes = 4;
   int32 rank = 5;
+}
+
+enum MLNodeTrainStatusEnum {
+  OK = 0;
+  ERROR = 1;
+  JOINED = 2;
+  NOT_JOINED = 3;
 }
 
 message HeartbeatRequest {
@@ -48,7 +55,12 @@ message HeartbeatRequest {
 }
 
 message HeartbeatResponse {
-  string status = 1;             // e.g. "heartbeat_ok"
+  HeartbeatStatusEnum status = 1;
+}
+
+enum HeartbeatStatusEnum {
+  HEARTBEAT_OK = 0;
+  HEARTBEAT_ERROR = 1;
 }
 
 message GetAliveNodesRequest {
@@ -68,7 +80,12 @@ message SetBarrierRequest {
 }
 
 message SetBarrierResponse {
-  string status = 1; // e.g. "ready"
+  BarrierStatusEnum status = 1;
+}
+
+enum BarrierStatusEnum {
+  READY = 0;
+  NOT_READY = 1;
 }
 
 message GetBarrierStatusRequest {
@@ -93,7 +110,12 @@ message Record {
 }
 
 message SetStoreRecordResponse {
-  string status = 1; // e.g. "ok"
+  StoreRecordStatusEnum status = 1;
+}
+
+enum StoreRecordStatusEnum {
+  SET_RECORD_OK = 0;
+  SET_RECORD_ERROR = 1;
 }
 
 message GetStoreRecordRequest {
