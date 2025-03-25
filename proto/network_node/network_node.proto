@@ -4,10 +4,87 @@ package network_node.v1;
 
 option go_package = "github.com/product-science/chain-protos/go/network_node/v1;network_node_v1";
 
-service RecordService {
-  rpc SetRecord(SetRecordRequest) returns (SetRecordResponse);
+service NetworkNodeService {
+  rpc JoinTraining(JoinTrainingRequest) returns (MLNodeTrainStatus);
 
-  rpc GetRecord(GetRecordRequest) returns (GetRecordResponse);
+  rpc GetJoinTrainingStatus(JoinTrainingRequest) returns (MLNodeTrainStatus);
+
+  rpc SendHeartbeat(HeartbeatRequest) returns (HeartbeatResponse);
+
+  rpc GetAliveNodes(GetAliveNodesRequest) returns (GetAliveNodesResponse);
+
+  rpc SetBarrier(SetBarrierRequest) returns (SetBarrierResponse);
+
+  rpc GetBarrierStatus(GetBarrierStatusRequest) returns (GetBarrierStatusResponse);
+
+  rpc SetStoreRecord(SetStoreRecordRequest) returns (SetStoreRecordResponse);
+
+  rpc GetStoreRecord(GetStoreRecordRequest) returns (GetStoreRecordResponse);
+
+  rpc ListStoreKeys(StoreListKeysRequest) returns (StoreListKeysResponse);
+}
+
+message JoinTrainingRequest {
+  string node_id = 1;
+  string run_id = 2;
+  int32 epoch = 3;
+}
+
+message MLNodeTrainStatus {
+  string status = 1;             // e.g. "ok", "error", "joined", "not_joined"
+  string node_id = 2;
+  int32 epoch = 3;
+  repeated string active_nodes = 4;
+  int32 rank = 5;
+}
+
+message HeartbeatRequest {
+  string node_id = 1;
+  string run_id = 2;
+  int32 local_rank = 3;
+  double timestamp = 4;
+  int32 step = 5;
+  int32 global_epoch = 6;
+}
+
+message HeartbeatResponse {
+  string status = 1;             // e.g. "heartbeat_ok"
+}
+
+message GetAliveNodesRequest {
+  string run_id = 1;
+  int32 epoch = 2;
+}
+
+message GetAliveNodesResponse {
+  repeated string alive_nodes = 1;
+}
+
+message SetBarrierRequest {
+  string barrier_id = 1;
+  string node_id = 2;
+  string run_id = 3;
+  int32 epoch = 4;
+}
+
+message SetBarrierResponse {
+  string status = 1; // e.g. "ready"
+}
+
+message GetBarrierStatusRequest {
+  string barrier_id = 1;
+  string run_id = 2;
+  int32 epoch = 3;
+}
+
+message GetBarrierStatusResponse {
+  bool all_ready = 1;
+  repeated string not_ready = 2;
+  repeated string alive_nodes = 3;
+}
+
+message SetStoreRecordRequest {
+  Record record = 1;
 }
 
 message Record {
@@ -15,18 +92,20 @@ message Record {
   string value = 2;
 }
 
-message SetRecordRequest {
-  Record record = 1;
+message SetStoreRecordResponse {
+  string status = 1; // e.g. "ok"
 }
 
-message SetRecordResponse {
-  bool success = 1;
-}
-
-message GetRecordRequest {
+message GetStoreRecordRequest {
   string key = 1;
 }
 
-message GetRecordResponse {
+message GetStoreRecordResponse {
   Record record = 1;
+}
+
+message StoreListKeysRequest {}
+
+message StoreListKeysResponse {
+  repeated string keys = 1;
 }
