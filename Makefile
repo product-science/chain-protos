@@ -1,4 +1,4 @@
-PROTO_SRC_DIR = go/proto
+PROTO_SRC_DIR = go/proto/network_node
 GO_OUT_DIR = go
 
 # Protobuf import paths or other plugins you use

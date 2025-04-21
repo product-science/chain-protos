@@ -2,9 +2,9 @@
 // versions:
 // - protoc-gen-go-grpc v1.3.0
 // - protoc             v5.26.1
-// source: network_node/network_node.proto
+// source: v1/network_node.proto
 
-package network_node_v1
+package network_nodev1
 
 import (
 	context "context"
@@ -401,5 +401,5 @@ var NetworkNodeService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "network_node/network_node.proto",
+	Metadata: "v1/network_node.proto",
 }
