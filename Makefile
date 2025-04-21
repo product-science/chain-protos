@@ -1,4 +1,4 @@
-PROTO_SRC_DIR = proto
+PROTO_SRC_DIR = go/proto
 GO_OUT_DIR = go
 
 # Protobuf import paths or other plugins you use
@@ -22,3 +22,9 @@ proto-gen-go:
 	  $(PROTOC_GEN_GO) \
 	  $(PROTOC_GEN_GRPC_GATEWAY) \
 	  $(PROTO_SRC_DIR)/**/*.proto
+
+proto-gen-desc:
+	protoc $(PROTO_INCLUDE) \
+       --descriptor_set_out=$(GO_OUT_DIR)/network_node.pb \
+       $(PROTO_SRC_DIR)/network_node/network_node.proto
+
