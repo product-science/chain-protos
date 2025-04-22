@@ -1,7 +1,6 @@
-# custom-types-repo/proto/buf.yaml
 version: v1
 # Optional: Give it a name if you ever plan to push to BSR
-# name: buf.build/your-org/custom-types
+name: buf.build/product-science/chain-protos
 breaking:
   use:
     - FILE
