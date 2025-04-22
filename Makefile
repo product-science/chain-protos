@@ -25,6 +25,5 @@ proto-gen-go:
 
 proto-gen-desc:
 	protoc $(PROTO_INCLUDE) \
-       --descriptor_set_out=$(GO_OUT_DIR)/network_node.pb \
-       $(PROTO_SRC_DIR)/network_node/network_node.proto
-
+       --descriptor_set_out=$(GO_OUT_DIR)/network_node/v1/network_node.pb \
+       $(PROTO_SRC_DIR)/v1/network_node.proto
