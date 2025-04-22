@@ -1,0 +1,10 @@
+# custom-types-repo/proto/buf.yaml
+version: v1
+# Optional: Give it a name if you ever plan to push to BSR
+# name: buf.build/your-org/custom-types
+breaking:
+  use:
+    - FILE
+lint:
+  use:
+    - DEFAULT
