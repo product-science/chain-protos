@@ -215,7 +215,7 @@ type JoinTrainingRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	NodeId        string                 `protobuf:"bytes,1,opt,name=node_id,json=nodeId,proto3" json:"node_id,omitempty"`
 	RunId         uint64                 `protobuf:"varint,2,opt,name=run_id,json=runId,proto3" json:"run_id,omitempty"`
-	Epoch         int32                  `protobuf:"varint,3,opt,name=epoch,proto3" json:"epoch,omitempty"`
+	OuterStep     int32                  `protobuf:"varint,3,opt,name=outer_step,json=outerStep,proto3" json:"outer_step,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -264,9 +264,9 @@ func (x *JoinTrainingRequest) GetRunId() uint64 {
 	return 0
 }
 
-func (x *JoinTrainingRequest) GetEpoch() int32 {
+func (x *JoinTrainingRequest) GetOuterStep() int32 {
 	if x != nil {
-		return x.Epoch
+		return x.OuterStep
 	}
 	return 0
 }
@@ -275,7 +275,7 @@ type MLNodeTrainStatus struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Status        MLNodeTrainStatusEnum  `protobuf:"varint,1,opt,name=status,proto3,enum=network_node.v1.MLNodeTrainStatusEnum" json:"status,omitempty"`
 	NodeId        string                 `protobuf:"bytes,2,opt,name=node_id,json=nodeId,proto3" json:"node_id,omitempty"`
-	Epoch         int32                  `protobuf:"varint,3,opt,name=epoch,proto3" json:"epoch,omitempty"`
+	OuterStep     int32                  `protobuf:"varint,3,opt,name=outer_step,json=outerStep,proto3" json:"outer_step,omitempty"`
 	ActiveNodes   []string               `protobuf:"bytes,4,rep,name=active_nodes,json=activeNodes,proto3" json:"active_nodes,omitempty"`
 	Rank          int32                  `protobuf:"varint,5,opt,name=rank,proto3" json:"rank,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -326,9 +326,9 @@ func (x *MLNodeTrainStatus) GetNodeId() string {
 	return ""
 }
 
-func (x *MLNodeTrainStatus) GetEpoch() int32 {
+func (x *MLNodeTrainStatus) GetOuterStep() int32 {
 	if x != nil {
-		return x.Epoch
+		return x.OuterStep
 	}
 	return 0
 }
@@ -353,8 +353,9 @@ type HeartbeatRequest struct {
 	RunId         uint64                 `protobuf:"varint,2,opt,name=run_id,json=runId,proto3" json:"run_id,omitempty"`
 	LocalRank     int32                  `protobuf:"varint,3,opt,name=local_rank,json=localRank,proto3" json:"local_rank,omitempty"`
 	Timestamp     float64                `protobuf:"fixed64,4,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
-	Step          int32                  `protobuf:"varint,5,opt,name=step,proto3" json:"step,omitempty"`
-	GlobalEpoch   int32                  `protobuf:"varint,6,opt,name=global_epoch,json=globalEpoch,proto3" json:"global_epoch,omitempty"`
+	InnerStep     int32                  `protobuf:"varint,5,opt,name=inner_step,json=innerStep,proto3" json:"inner_step,omitempty"`
+	OuterStep     int32                  `protobuf:"varint,6,opt,name=outer_step,json=outerStep,proto3" json:"outer_step,omitempty"`
+	Epoch         int32                  `protobuf:"varint,7,opt,name=epoch,proto3" json:"epoch,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -417,16 +418,23 @@ func (x *HeartbeatRequest) GetTimestamp() float64 {
 	return 0
 }
 
-func (x *HeartbeatRequest) GetStep() int32 {
+func (x *HeartbeatRequest) GetInnerStep() int32 {
 	if x != nil {
-		return x.Step
+		return x.InnerStep
 	}
 	return 0
 }
 
-func (x *HeartbeatRequest) GetGlobalEpoch() int32 {
+func (x *HeartbeatRequest) GetOuterStep() int32 {
 	if x != nil {
-		return x.GlobalEpoch
+		return x.OuterStep
+	}
+	return 0
+}
+
+func (x *HeartbeatRequest) GetEpoch() int32 {
+	if x != nil {
+		return x.Epoch
 	}
 	return 0
 }
@@ -478,7 +486,7 @@ func (x *HeartbeatResponse) GetStatus() HeartbeatStatusEnum {
 type GetAliveNodesRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	RunId         uint64                 `protobuf:"varint,1,opt,name=run_id,json=runId,proto3" json:"run_id,omitempty"`
-	Epoch         int32                  `protobuf:"varint,2,opt,name=epoch,proto3" json:"epoch,omitempty"`
+	OuterStep     int32                  `protobuf:"varint,2,opt,name=outer_step,json=outerStep,proto3" json:"outer_step,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -520,9 +528,9 @@ func (x *GetAliveNodesRequest) GetRunId() uint64 {
 	return 0
 }
 
-func (x *GetAliveNodesRequest) GetEpoch() int32 {
+func (x *GetAliveNodesRequest) GetOuterStep() int32 {
 	if x != nil {
-		return x.Epoch
+		return x.OuterStep
 	}
 	return 0
 }
@@ -576,7 +584,7 @@ type SetBarrierRequest struct {
 	BarrierId     string                 `protobuf:"bytes,1,opt,name=barrier_id,json=barrierId,proto3" json:"barrier_id,omitempty"`
 	NodeId        string                 `protobuf:"bytes,2,opt,name=node_id,json=nodeId,proto3" json:"node_id,omitempty"`
 	RunId         uint64                 `protobuf:"varint,3,opt,name=run_id,json=runId,proto3" json:"run_id,omitempty"`
-	Epoch         int32                  `protobuf:"varint,4,opt,name=epoch,proto3" json:"epoch,omitempty"`
+	OuterStep     int32                  `protobuf:"varint,4,opt,name=outer_step,json=outerStep,proto3" json:"outer_step,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -632,9 +640,9 @@ func (x *SetBarrierRequest) GetRunId() uint64 {
 	return 0
 }
 
-func (x *SetBarrierRequest) GetEpoch() int32 {
+func (x *SetBarrierRequest) GetOuterStep() int32 {
 	if x != nil {
-		return x.Epoch
+		return x.OuterStep
 	}
 	return 0
 }
@@ -687,7 +695,7 @@ type GetBarrierStatusRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	BarrierId     string                 `protobuf:"bytes,1,opt,name=barrier_id,json=barrierId,proto3" json:"barrier_id,omitempty"`
 	RunId         uint64                 `protobuf:"varint,2,opt,name=run_id,json=runId,proto3" json:"run_id,omitempty"`
-	Epoch         int32                  `protobuf:"varint,3,opt,name=epoch,proto3" json:"epoch,omitempty"`
+	OuterStep     int32                  `protobuf:"varint,3,opt,name=outer_step,json=outerStep,proto3" json:"outer_step,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -736,9 +744,9 @@ func (x *GetBarrierStatusRequest) GetRunId() uint64 {
 	return 0
 }
 
-func (x *GetBarrierStatusRequest) GetEpoch() int32 {
+func (x *GetBarrierStatusRequest) GetOuterStep() int32 {
 	if x != nil {
-		return x.Epoch
+		return x.OuterStep
 	}
 	return 0
 }
@@ -1139,46 +1147,54 @@ var File_v1_network_node_proto protoreflect.FileDescriptor
 
 const file_v1_network_node_proto_rawDesc = "" +
 	"\n" +
-	"\x15v1/network_node.proto\x12\x0fnetwork_node.v1\"[\n" +
+	"\x15v1/network_node.proto\x12\x0fnetwork_node.v1\"d\n" +
 	"\x13JoinTrainingRequest\x12\x17\n" +
 	"\anode_id\x18\x01 \x01(\tR\x06nodeId\x12\x15\n" +
-	"\x06run_id\x18\x02 \x01(\x04R\x05runId\x12\x14\n" +
-	"\x05epoch\x18\x03 \x01(\x05R\x05epoch\"\xb9\x01\n" +
+	"\x06run_id\x18\x02 \x01(\x04R\x05runId\x12\x1d\n" +
+	"\n" +
+	"outer_step\x18\x03 \x01(\x05R\touterStep\"\xc2\x01\n" +
 	"\x11MLNodeTrainStatus\x12>\n" +
 	"\x06status\x18\x01 \x01(\x0e2&.network_node.v1.MLNodeTrainStatusEnumR\x06status\x12\x17\n" +
-	"\anode_id\x18\x02 \x01(\tR\x06nodeId\x12\x14\n" +
-	"\x05epoch\x18\x03 \x01(\x05R\x05epoch\x12!\n" +
+	"\anode_id\x18\x02 \x01(\tR\x06nodeId\x12\x1d\n" +
+	"\n" +
+	"outer_step\x18\x03 \x01(\x05R\touterStep\x12!\n" +
 	"\factive_nodes\x18\x04 \x03(\tR\vactiveNodes\x12\x12\n" +
-	"\x04rank\x18\x05 \x01(\x05R\x04rank\"\xb6\x01\n" +
+	"\x04rank\x18\x05 \x01(\x05R\x04rank\"\xd3\x01\n" +
 	"\x10HeartbeatRequest\x12\x17\n" +
 	"\anode_id\x18\x01 \x01(\tR\x06nodeId\x12\x15\n" +
 	"\x06run_id\x18\x02 \x01(\x04R\x05runId\x12\x1d\n" +
 	"\n" +
 	"local_rank\x18\x03 \x01(\x05R\tlocalRank\x12\x1c\n" +
-	"\ttimestamp\x18\x04 \x01(\x01R\ttimestamp\x12\x12\n" +
-	"\x04step\x18\x05 \x01(\x05R\x04step\x12!\n" +
-	"\fglobal_epoch\x18\x06 \x01(\x05R\vglobalEpoch\"Q\n" +
+	"\ttimestamp\x18\x04 \x01(\x01R\ttimestamp\x12\x1d\n" +
+	"\n" +
+	"inner_step\x18\x05 \x01(\x05R\tinnerStep\x12\x1d\n" +
+	"\n" +
+	"outer_step\x18\x06 \x01(\x05R\touterStep\x12\x14\n" +
+	"\x05epoch\x18\a \x01(\x05R\x05epoch\"Q\n" +
 	"\x11HeartbeatResponse\x12<\n" +
-	"\x06status\x18\x01 \x01(\x0e2$.network_node.v1.HeartbeatStatusEnumR\x06status\"C\n" +
+	"\x06status\x18\x01 \x01(\x0e2$.network_node.v1.HeartbeatStatusEnumR\x06status\"L\n" +
 	"\x14GetAliveNodesRequest\x12\x15\n" +
-	"\x06run_id\x18\x01 \x01(\x04R\x05runId\x12\x14\n" +
-	"\x05epoch\x18\x02 \x01(\x05R\x05epoch\"8\n" +
+	"\x06run_id\x18\x01 \x01(\x04R\x05runId\x12\x1d\n" +
+	"\n" +
+	"outer_step\x18\x02 \x01(\x05R\touterStep\"8\n" +
 	"\x15GetAliveNodesResponse\x12\x1f\n" +
 	"\valive_nodes\x18\x01 \x03(\tR\n" +
-	"aliveNodes\"x\n" +
+	"aliveNodes\"\x81\x01\n" +
 	"\x11SetBarrierRequest\x12\x1d\n" +
 	"\n" +
 	"barrier_id\x18\x01 \x01(\tR\tbarrierId\x12\x17\n" +
 	"\anode_id\x18\x02 \x01(\tR\x06nodeId\x12\x15\n" +
-	"\x06run_id\x18\x03 \x01(\x04R\x05runId\x12\x14\n" +
-	"\x05epoch\x18\x04 \x01(\x05R\x05epoch\"P\n" +
+	"\x06run_id\x18\x03 \x01(\x04R\x05runId\x12\x1d\n" +
+	"\n" +
+	"outer_step\x18\x04 \x01(\x05R\touterStep\"P\n" +
 	"\x12SetBarrierResponse\x12:\n" +
-	"\x06status\x18\x01 \x01(\x0e2\".network_node.v1.BarrierStatusEnumR\x06status\"e\n" +
+	"\x06status\x18\x01 \x01(\x0e2\".network_node.v1.BarrierStatusEnumR\x06status\"n\n" +
 	"\x17GetBarrierStatusRequest\x12\x1d\n" +
 	"\n" +
 	"barrier_id\x18\x01 \x01(\tR\tbarrierId\x12\x15\n" +
-	"\x06run_id\x18\x02 \x01(\x04R\x05runId\x12\x14\n" +
-	"\x05epoch\x18\x03 \x01(\x05R\x05epoch\"u\n" +
+	"\x06run_id\x18\x02 \x01(\x04R\x05runId\x12\x1d\n" +
+	"\n" +
+	"outer_step\x18\x03 \x01(\x05R\touterStep\"u\n" +
 	"\x18GetBarrierStatusResponse\x12\x1b\n" +
 	"\tall_ready\x18\x01 \x01(\bR\ballReady\x12\x1b\n" +
 	"\tnot_ready\x18\x02 \x03(\tR\bnotReady\x12\x1f\n" +
